@@ -1,0 +1,7 @@
+{
+    "SYSTEM":{"DATA":"$DATAROOT/$PNAME"},
+    "MAIN": "$PROGRAM/myecho.sh \"$text\" $punct",   
+    "text": "^[a-zA-z0-9]+$",
+    "punct":[".", "!", "$other"],
+    "other" : ".*"
+}

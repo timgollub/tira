@@ -1,0 +1,3 @@
+{
+    "DATABASE":"http://localhost:2306/programs/examples/echo.json"
+}

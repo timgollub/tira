@@ -1,0 +1,38 @@
+.th-inner {
+	position: relative;
+	padding-top: 4px;
+}
+
+.th-inner a {
+	display: inline-block;
+	width: 100%;
+	height: 10px;
+	background: #ccc;
+	position: absolute;
+	left: 0;
+	top: -4px;
+}
+
+.collapsed .th-inner a {
+	background: #ccc;
+}
+
+table.tablesorter thead tr .headerSortUp {
+/*	background-image: url("/web/asc.gif");*/
+}
+
+/* For add remove Buttons */
+#config input.add-button,#config input.remove-button {
+	padding: 0;
+	margin: 0;
+	text-align: middle;
+	vertical-align: center;
+	width: 23px;
+	height: 23px;
+	color: blue;
+	font: bold 14px Monospace;
+}
+
+#config input.remove-button {
+	color: red;
+}

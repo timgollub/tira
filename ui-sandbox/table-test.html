@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>TIRA</title>
+<link rel="shortcut icon" href="../ui/icons/tira-logo.png" />
+<link rel="stylesheet" href="../ui/tira.css" />
+<link rel="stylesheet" href="../ui/tira-new.css" />
+<script src="../ui/jquery-1.7.1.min.js"></script>
+<!--  <script src="../ui/tira.js"></script>  -->
+<script src="../ui/jquery.tablesorter.min.js"></script>
+
+<link rel="stylesheet" href="jquery.table-collapse.css" />
+
+<script src="jquery.table-collapse.js"></script>
+<script src="add-remove-inputs.js"></script>
+
+
+</head>
+
+<body>
+	<div id="container">
+		<ul id="header">
+			<li><img src="/web/icons/tira-logo-text.png"></li>
+			<li id="title">echo</li>
+		</ul>
+
+		<div id="tira">
+			<div id="info">Welcome to the TIRA test program "echo".</div>
+			<form action="" id="form">
+				<ul id="config" class="config">
+					<li><img src="/web/icons/dot.png"><label>Text</label><input
+						type="text" name="text"></li>
+					<li><img src="/web/icons/dot.png"><label>Punctuation</label><select
+						name="point"><option value="">-</option>
+							<option selected="selected" value=".">.</option>
+							<option value="?">?</option>
+							<option value="!">!</option>
+							<option value="$T">Other</option></select></li>
+				</ul>
+				<input type="button" value="Search" id="query"><input
+					type="button" value="Execute" id="execute">
+			</form>
+			<div id="results">
+				<table id="results-table" class="tablesorter">
+					<thead>
+						<tr>
+							<th class="header">Text </th>
+							<th class="header">Punctuation</th>
+							<th class="header">Other</th>
+							<th class="header">Sentence</th>
+							<th class="header">Output</th>
+							<th class="header">Status</th>
+							<th class="header">Log-File</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>hello world 222</td>
+							<td>.</td>
+							<td>undefined</td>
+							<td>hello world.</td>
+							<td><a href="echo/run/13/output">output</a></td>
+							<td>DONE</td>
+							<td><a href="echo/run/13/log">log</a></td>
+						</tr>
+						<tr>
+							<td>hello world</td>
+							<td>.</td>
+							<td>undefined</td>
+							<td>undefined</td>
+							<td><a href="echo/run/17/output">output</a></td>
+							<td>ERROR</td>
+							<td><a href="echo/run/17/log">log</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div id="footer">
+			<span>&copy;2012 <a href="http://webis.de/">webis.de</a></span>
+		</div>
+	</div>
+	
+	<script>
+	
+		$( function(){
+		
+			jQuery( "#results-table" ).columnCollapse();
+			jQuery( "#results-table" ).tablesorter();
+		
+		});
+	
+	</script>
+	
+</body>
+</html>

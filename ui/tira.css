@@ -1,0 +1,161 @@
+body {
+    margin:0;
+    padding:0;
+    min-width:960px;
+    font: 12px/24px Tahoma, Helvetica, Arial;
+}
+
+#container {
+    width:960px;
+    margin:0px auto;
+    border-top: 8px solid #0066cc;
+}
+
+#header
+{
+    margin:0;
+    padding:0.5em 0 0.5em 1em;
+    background:#F5F5F5;
+    border-bottom: 1px solid #E0E0E0;
+
+}
+
+#header li
+{
+    list-style: none;
+    display:inline-block;
+    padding-right: 1em;
+    vertical-align: middle;    
+}
+
+#header li *
+{
+    margin:0;
+    padding:0;
+}
+
+#title {
+    font-size: 22px;
+    font-family: Georgia;
+}
+
+
+/******
+CONTENT
+*******/
+
+ #tira {
+ padding: 1em;
+ font-size: 10pt;
+ }
+ 
+ #tira > * {
+  padding-bottom: 1em;
+  margin-bottom: 2em;
+  border-bottom: dotted 1px #666666;
+ }
+
+
+#tira li > * {
+ padding-right: 5px;
+}
+
+#tira input, #tira select {
+ margin:0px;
+ padding:0px;
+ margin-left: 5px;
+ 
+}
+#tira input[type=text] {
+width: 12em; 
+}
+
+#tira input[type=file] {
+width: 1px; 
+z-index: 2;
+}
+
+
+
+#footer {
+    text-align: right;
+}
+
+#footer span {
+    float: none;
+}
+
+#footer a {
+    color: #0066CC;
+}
+
+.clearfix:after {
+   content: ".";
+   display: block;
+   clear: both;
+   visibility: hidden;
+   line-height: 0;
+   height: 0;
+}
+ 
+.clearfix {
+   display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+   display: block;
+}
+ 
+* html .clearfix {
+   height: 1%;
+   overflow: visible;
+}
+
+/******
+Tables 
+******/
+table.tablesorter {
+    /*font-family:arial;*/
+    background-color: #CDCDCD;
+    margin:10px 0pt 15px;
+    font-size: 10pt;
+    width: 100%;
+    text-align: left;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+    background-color: #e6EEEE;
+    border: 1px solid #FFF;
+    /*font-size: 8pt;*/
+    padding: 4px;
+}
+table.tablesorter thead tr .header {
+/*    background-image: url(/web/bg.gif);*/
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+}
+table.tablesorter tbody td {
+    color: #3D3D3D;
+    padding: 4px;
+    background-color: #FFF;
+    vertical-align: top;
+}
+table.tablesorter tbody tr.odd td {
+    background-color:#F0F0F6;
+}
+table.tablesorter thead tr .headerSortUp {
+/*    background-image: url(/ui/asc.gif);*/
+}
+table.tablesorter thead tr .headerSortDown {
+/*    background-image: url(/ui/desc.gif);*/
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+background-color: #8dbdd8;
+}
+
+
+
+.regex-invalid {
+	border-color:red;
+	background:#ffeeee;
+}

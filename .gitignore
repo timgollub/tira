@@ -1,0 +1,6 @@
+bin/
+data/
+CVS/
+*~
+*.jar
+.cvsignore
