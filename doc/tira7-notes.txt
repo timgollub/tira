@@ -1,5 +1,5 @@
 MOP.   TIRA-7 NOTES.
-DATE.  July 16th, 2012.
+DATE.  August 09th, 2012.
 
 ORGANIZATION.
 
@@ -10,6 +10,7 @@ ORGANIZATION.
  - umair.jabbar@uni-weimar.de
  
 [participants]
+ - christopher.luebbemeier@uni-weimar.de
  - steven.burrows@uni-weimar.de
  - tom.paschke@uni-weimar.de
 
