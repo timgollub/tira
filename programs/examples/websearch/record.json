@@ -1,5 +1,5 @@
 {
-    "MAIN": "java -jar $PROGRAM/websearch.jar \"$Query\" $NumResults $Engine > result.json && echo {\\\"result\\\":\\\"\\$output-dir/result.json\\\"} 1>&2",
+    "MAIN": "java -jar $PROGRAM$/websearch.jar '$Query' $NumResults $Engine > result.json && echo {\\\"result\\\":\\\"\\$Run Directory/result.json\\\"} 1>&2",
     "Query": "^\\w+$",
     "NumResults":["1", "10", "100"],
     "Engine" : ["BING","CHATNOIR","WIKIPEDIA"]

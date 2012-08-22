@@ -41,6 +41,10 @@ public class TiraApp {
         
         //this.tiraConfig = tiraConfig;
         this.system = systemConfig;
+        
+        if(System.getProperty("os.name").contains("Windows")){system.put("/", "\\");}
+        else {system.put("/", "/");}
+        
         if(system.get(Util.PROGRAMROOT) instanceof String)
         {
             this.programPaths = (new JSONArray()).put(system.getString(Util.PROGRAMROOT));

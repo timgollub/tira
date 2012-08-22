@@ -245,8 +245,6 @@ public class TiraNode {
     
     public static void init(HttpServer server, JSONObject systemConfig) throws JSONException, InterruptedException, IOException
     {
-        if(System.getProperty("os.name").contains("Windows")){systemConfig.put("/", "\\");}
-        else {systemConfig.put("/", "/");}
     	TiraNode.server = server;
         //tiraConfig = tira;
         system = systemConfig;
