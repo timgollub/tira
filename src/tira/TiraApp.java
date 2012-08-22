@@ -122,6 +122,7 @@ public class TiraApp {
     }
     
     private void loadPrograms(File programRoot, File programDir, JSONObject baseRecord) throws InterruptedException, JSONException, IOException {
+        if(!programDir.exists()){return;}
         File recordFile = new File(programDir,"record.json");
         JSONObject programRecord;
         if(recordFile.exists())
