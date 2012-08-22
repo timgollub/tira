@@ -19,6 +19,7 @@ public abstract class AProgram {
     
     public abstract JSONObject getDefaultConfig();
     
+    public abstract String getInfo();
     
     public abstract String[] createRuns(JSONObject runConfig);
     
@@ -41,14 +42,15 @@ public abstract class AProgram {
         //write script to working dir.
         File scriptFile = writeCommand(cmd, runDir);
         //start script.
-        int exitCode = call(scriptFile,runId);
         JSONObject files = new JSONObject();
-        files.put("output-dir", (new File(runDir)).getAbsolutePath());
+        files.put("Run Directory", (new File(runDir)).getAbsolutePath());
         if(system.has(Util.NODE))
-        {   files.put("output-dir", files.getString("output-dir")
+        {   files.put("Run Directory", files.getString("Run Directory")
                 .replace(system.getString(Util.DATAROOT),system.getString(Util.NODE)+"data")
                 .replace("\\","/"));
         }
+        updateRun(runId, files); files = new JSONObject();
+        int exitCode = call(scriptFile,runId);
         if(exitCode!=0) {updateRun(runId, files.put(Util.STATE, Util.ERROR));}
         else {updateRun(runId, files.put(Util.STATE, Util.DONE));}
     }

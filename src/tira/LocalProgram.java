@@ -221,7 +221,7 @@ public class LocalProgram extends AProgram{
             while(keyIter.hasNext()) {
                 String key = keyIter.next();             
                 if(run.has(key)){removeFromIndex(key,run.getString(key),runId);}
-                String updateValue = update.getString(key);
+                String updateValue = Util.substitute(update.getString(key),run);
                 run.put(key, updateValue);
                 edit.put(key, updateValue);
                 addToIndex(key,updateValue,runId);                               
@@ -267,6 +267,14 @@ public class LocalProgram extends AProgram{
     public JSONObject getProgramRecord() {return record;}   
     @Override
     public JSONObject getDefaultConfig() {return baseConfig;} 
+    @Override   
+    public String getInfo() {
+        try {            
+            File file = new File(system.getString(Util.PROGRAM),"info.html");
+            return Util.fileToString(file);
+        }
+        catch(Exception e) {return "";}
+    }
     
     public static void main(String[] args) throws JSONException, IOException, InterruptedException {
         JSONObject programRecord = new JSONObject(Util.fileToString(new File("programs/echo/record.json")));

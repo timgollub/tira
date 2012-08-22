@@ -66,12 +66,13 @@ public class TiraNode {
                                               .put(Util.RESULTS, "undefined")
                                               .put(Util.CONFIG, "undefined")
                                               .put(Util.SCRIPT, "")
-                                              .put(Util.INFO, app.getInfo(program))
+                                              .put(Util.INFO, "")//app.getInfo(program))
                                               .put(Util.PNAME, program);
         
         AProgram p = app.getProgram(program);
         if(p!=null){       
 	        response.put(Util.RECORD, p.getProgramRecord().toString());
+            response.put(Util.INFO, p.getInfo());
 	        MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
 	        if(!queryParams.isEmpty())
 	        {
@@ -79,10 +80,26 @@ public class TiraNode {
 		        System.out.println(runConfig);
 		        response.put(Util.RESULTS, p.readRuns(runConfig).toString());
 		        response.put(Util.CONFIG, Util.augment(runConfig, p.getDefaultConfig()).toString());
-		        System.out.println(response.getString(Util.RESULTS));
+		        //System.out.println(response.getString(Util.RESULTS));
 	        }
 	        else{response.put(Util.CONFIG, p.getDefaultConfig().toString());}
 	        response.put(Util.SCRIPT, Util.fileToString(new File(system.getString(Util.UI),"tira.js")));
+        }
+        else {
+            String[] programs = app.getProgramsInFolder(program);
+            if(programs.length>0)
+            {
+                StringBuilder html = new StringBuilder("<ul>");
+                for(String pname : programs)
+                {
+                    if(pname.isEmpty())
+                    {html.append("<li><a href='/programs/"+pname+"'>/</a></li>");}
+                    else
+                    {html.append("<li><a href='/programs/"+pname+"'>"+pname+"</a></li>");}
+                }
+                html.append("</ul>");
+                response.put(Util.INFO, html.toString());
+            }
         }
         return Response.status(Status.OK).entity(Util.substitute(template, response)).build();
     }
@@ -177,7 +194,7 @@ public class TiraNode {
         	.put(Util.CONFIG, "undefined")
         	.put(Util.SCRIPT, "")
         	.put(Util.INFO, "")
-        	.put(Util.PNAME, "Files");
+        	.put(Util.PNAME, "Run Directory");
        		StringBuilder links = new StringBuilder("<ul>");
         	
         	for(String file : f.list())
@@ -204,9 +221,32 @@ public class TiraNode {
                 .build();
     }
     
+//    @POST
+//    @Path("/upload/{filename:.+}")
+//    @Consumes("application/octet-stream")    
+//    public Response upload(InputStream is) throws JSONException
+//    {
+//        long id = 0;//getUploadID();
+//        //String filename = request.getHeader("X-File-Name");
+//        JSONObject response = new JSONObject().put("filepath", "$UPLOAD/"+id);
+//        try {
+//            System.out.println("OUT: "+is.available());
+//            FileOutputStream fos = new FileOutputStream(new File(uploadDir,String.valueOf(id)));
+//            IOUtils.copy(is, fos);
+//            response.put("success", true);
+//        }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//            response.put("success", false);
+//        }       
+//        return Response.status(Status.OK).entity(response.toString()).type("text/html").build();
+//    }
+    
     
     public static void init(HttpServer server, JSONObject systemConfig) throws JSONException, InterruptedException, IOException
     {
+        if(System.getProperty("os.name").contains("Windows")){systemConfig.put("/", "\\");}
+        else {systemConfig.put("/", "/");}
     	TiraNode.server = server;
         //tiraConfig = tira;
         system = systemConfig;
@@ -227,9 +267,9 @@ public class TiraNode {
 
     public static void main(String[] args) throws IllegalArgumentException, IOException,
         URISyntaxException, JSONException, InterruptedException {
-        
+        System.out.println("\nName of the OS: " + System.getProperty("os.name"));
         JSONObject systemConfig = 
-                new JSONObject(Util.fileToString(new File("programs/record.json"))).getJSONObject(Util.SYSTEM); 
+                new JSONObject(Util.fileToString(new File("system-config.json"))).getJSONObject(Util.SYSTEM);        
         
         //start server.
         ResourceConfig config = new ApplicationAdapter(new Application(){
@@ -241,6 +281,7 @@ public class TiraNode {
                 HttpServerFactory.create(systemConfig.getString(Util.NODE), config);
         TiraNode.init(server,systemConfig);
         server.start();
+        System.out.println("TiraServer started on " + systemConfig.getString(Util.NODE));
         //open browser.
         //if(Desktop.isDesktopSupported()){Desktop.getDesktop().browse(new URI(baseUrl));}  
     }

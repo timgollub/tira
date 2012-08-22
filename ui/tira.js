@@ -2,7 +2,7 @@ window.onload = function(){tira = new Tira();tira.renderPage();}
 
 function Tira()
 {
-  //vars program, record, and result are available from script element in the html page.
+  //vars pname, record, config, and result are available from script element in the html page.
     var _this = this;
     var $form = $("<form id='form' action=''><ul class='config' id='config'/><input id='query' type='button' value='Search'/><input id='execute' type='button' value='Execute'></form>");
     $form.submit(function(){$(':file').attr("disabled",true)});
@@ -11,7 +11,7 @@ function Tira()
     var $execute = $('#execute').click(function(){$form.attr("method","post");$form.submit();});
     var $info = $('#info');
     var $config = $('#config');
-    var $results = $('#results');
+    var $results = $('#results');    
 
     this.checkExecutable = function()
     {
@@ -47,6 +47,7 @@ function Tira()
     this.renderPage = function()
     {
         //_this.loadInfo($info);
+        //_this.setTitle();
         _this.renderRecordEntry("MAIN", $config);
         _this.initAddRemoveButtons();
         _this.checkExecutable();
@@ -90,7 +91,7 @@ function Tira()
                         _this.renderInputSelect(entryName,recordEntry.label,recordEntry.options,configValue,$htmlElement);
                         break;
                     case "input-file": 
-                        _this.renderInputFile(entryName,configValue,recordEntry,$htmlElement);
+                        _this.renderInputFile(entryName,recordEntry.label,configValue,$htmlElement);
                         break;
                 }
             }
@@ -161,21 +162,18 @@ function Tira()
         $input.change();       
     }
     
-    this.renderInputFile = function(entryName,valueString,recordEntry,$htmlElement)
+    this.renderInputFile = function(entryName,paramLabel,valueString,$htmlElement)
     {
-        var $li = $(document.createElement('li'));         
-        var img = document.createElement('img');
-        img.setAttribute('src', '/web/icons/dot.png');
-        $li.append(img);
+        var $li = $(document.createElement('li'));
         var $label = $(document.createElement('label'));
-        $label.text(recordEntry.label);
-        $li.append($label);    
+        $label.text(paramLabel);
+        $li.append($label); 
         var $input = $('<input type="text"/>').attr("name",entryName);
         $input.val(valueString);
         $label.append($input);
         $input.change(function(){_this.checkExecutable();});
         
-        $upload = $(document.createElement('div')).css("display","inline-block").appendTo($li);
+        $upload = $(document.createElement('div')).css("display","inline-block").css("vertical-align","bottom").appendTo($li);
         var uploader = new qq.FileUploader({
             // pass the dom node (ex. $(selector)[0] for jQuery users)
             element: $upload[0],
@@ -189,8 +187,7 @@ function Tira()
             {
                 $input.val(responseJSON.filepath);
             }            
-        });      
-        
+        });            
         $htmlElement.append($li);   
     }
     
@@ -209,9 +206,25 @@ function Tira()
         $config = $('#config');
 		$config_li = $config.find('li');
 		
+		var input_types = {};
+		
 		$config_li.each( function() {
 			
-			_this.appendAddButton( $(this) );
+			var $li = $(this);
+			if($li.children().length<2){
+			var type = $li.text().substring(0,4);
+
+			var is_remove_button = false;
+			
+			if( input_types[type] != undefined ) {
+				is_remove_button = true;
+			}
+			else {
+				input_types[type] = true;
+			}
+			
+			_this.appendAddButton( $(this), is_remove_button );
+			}
 			
 		} );
 		
@@ -256,11 +269,32 @@ function Tira()
 		});
     }
     
-    this.appendAddButton = function( parent_li ) {
+    this.appendAddButton = function( parent_li, is_remove ) {
     	
-    	$add_button = $('<input type="button" class="add-button" value="+" />');
-		
-    	$(parent_li).append( $add_button );
+    	var $li = $(parent_li);
+    	
+    	if( $li.children('input[type="button"]').length == 0 ) {
+        	
+    		$button = $( '<input type="button" />');
+    		
+    		if( is_remove != true ) {
+    			$button.addClass('add-button').val('+');
+    		}
+    		else {
+    			$button.addClass('remove-button').val('-');
+    		}
+    		
+    		var $child_ul = $li.find('ul');
+    		
+    		if( $child_ul.length ) {
+    			$child_ul.before( $button );
+    		}
+    		else {
+            	$li.append( $button );
+    		}
+
+    	}
+    	
     }
     
     this.renderResultTable = function(htmlElement)
@@ -270,16 +304,24 @@ function Tira()
         var $header = $(document.createElement('tr')).appendTo($head);
         var $body = $(document.createElement('tbody')).appendTo($table);
         
-        var tableHeaders = [];
         
-        for(var i in results)
+        var tableHeaders = [];
+        if(record.OUTPUT && results)
         {
-        	result = results[i];
-        	for(var key in result)
-        	{
-        		if(key == key.toUpperCase()){continue;}
-        		if(tableHeaders.indexOf(key)<0){tableHeaders.push(key);$header.append($("<th>"+key+"</th>"));}  		
-        	}
+            tableHeaders=record.OUTPUT;
+            for(var i in tableHeaders) {$header.append($("<th>"+tableHeaders[i]+"</th>"));}
+        }
+        else
+        {
+            for(var i in results)
+            {
+            	result = results[i];
+            	for(var key in result)
+            	{
+            		if(key == key.toUpperCase()){continue;}
+            		if(tableHeaders.indexOf(key)<0){tableHeaders.push(key);$header.append($("<th>"+key+"</th>"));}  		
+            	}
+            }
         }
         
         for(var i in results)

@@ -29,10 +29,6 @@ table.tablesorter thead tr .headerSortUp {
 	vertical-align: center;
 	width: 23px;
 	height: 23px;
-	color: blue;
+	color: #888;
 	font: bold 14px Monospace;
-}
-
-#config input.remove-button {
-	color: red;
 }

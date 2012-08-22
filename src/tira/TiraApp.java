@@ -4,6 +4,8 @@ package tira;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -28,8 +30,9 @@ public class TiraApp {
     private Map<String,AProgram> programs = new HashMap<String,AProgram>();
     private BlockingQueue<AProgram> executionQueue = new LinkedBlockingQueue<AProgram>();
     private BlockingQueue<AProgram> waitingQueue = new LinkedBlockingQueue<AProgram>();
-    private String programPath;
+    private JSONArray programPaths;
     private String dataRoot;
+    private List<String> pNames = new LinkedList<String>();
     private boolean EXIT = false;
     
     
@@ -38,7 +41,12 @@ public class TiraApp {
         
         //this.tiraConfig = tiraConfig;
         this.system = systemConfig;
-        this.programPath = Util.substitute(system.getString(Util.PROGRAMROOT), system);
+        if(system.get(Util.PROGRAMROOT) instanceof String)
+        {
+            this.programPaths = (new JSONArray()).put(system.getString(Util.PROGRAMROOT));
+        }
+        else {this.programPaths = system.getJSONArray(Util.PROGRAMROOT);}
+        //this.programPath = Util.substitute(system.getString(Util.PROGRAMROOT), system);
         this.dataRoot = Util.substitute(system.getString(Util.DATAROOT), system);
         startWaitingQueue();
         startExecutionQueue(system.getInt(Util.WORKER));        
@@ -91,14 +99,6 @@ public class TiraApp {
         return programs.get(programName);
     }
     
-    public String getInfo(String program) {
-        try {            
-            File file = new File(programPath,program+"/info.html");
-            return Util.fileToString(file);
-        }
-        catch(Exception e) {return "";}
-    }
-    
     
     public File readData(String filepath)
     {
@@ -109,8 +109,12 @@ public class TiraApp {
     
     public void loadPrograms() throws JSONException, InterruptedException, IOException
     {
-        File pDir = new File(programPath);
-        loadPrograms(pDir,pDir,new JSONObject());
+        System.out.println("Loading programs...");
+        for(int i=0; i<programPaths.length(); ++i)
+        {           
+            File pDir = new File(programPaths.getString(i));
+            loadPrograms(pDir,pDir,(new JSONObject()).put(Util.SYSTEM, system));
+        }
     }
     
     private void loadPrograms(File programRoot, File programDir, JSONObject baseRecord) throws InterruptedException, JSONException, IOException {
@@ -120,12 +124,14 @@ public class TiraApp {
         {
             programRecord = new JSONObject(Util.fileToString(recordFile));
             Util.augmentDeep(programRecord,baseRecord);
+            programRecord.getJSONObject(Util.SYSTEM).put(Util.PROGRAMROOT, programRoot.getAbsolutePath());
             if(programRecord.has(Util.MAIN)||programRecord.has(Util.DATABASE))
             {
                 String programName = programDir.getPath().replaceFirst(programRoot.getPath(), "").substring(1).replace("\\", "/");
                 programRecord.getJSONObject("SYSTEM").put(Util.PNAME, programName);
                 AProgram program = ProgramFactory.createProgram(programRecord);                    
                 programs.put(programName, program);
+                pNames.add(programName);
                 if(programRecord.has(Util.MAIN)){executionQueue.put(program);}
                 System.out.println(programName+" loaded.");
             }
@@ -137,6 +143,17 @@ public class TiraApp {
         {
             if(dir.isDirectory()){loadPrograms(programRoot,dir,programRecord);}        
         }      
+    }
+
+    public String[] getProgramsInFolder(String program) {
+        StringBuilder folder = new StringBuilder();
+        for(String pname : pNames)
+        {
+            if(pname.startsWith(program)) {
+                folder.append(":");folder.append(pname);
+            }
+        }
+        return folder.toString().split(":");
     }
 
     public void exit(){EXIT=true;}

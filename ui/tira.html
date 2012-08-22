@@ -12,7 +12,7 @@
 <div id="container">
 	<ul id="header">
         <li><img src="/ui/icons/tira-logo-text.png"></li>
-        <li id="title">$PNAME</li>
+        <li id="title"></li>
     </ul>
     
     <div id="info">$INFO</div>
@@ -23,11 +23,24 @@
 </body>
 <script src='/ui/jquery-1.7.1.min.js'></script>
 <script src='/ui/jquery.table-collapse.js'></script>
+<script src='/ui/fileuploader.js'></script>
 <script src='/ui/jquery.tablesorter.min.js'></script>
 <script>
+var pname = "$PNAME";
 var record = $RECORD;
 var config = $CONFIG;
 var results = $RESULTS;
 $SCRIPT
+</script>
+<script>
+var $title = $('#title');
+var split = pname.split('/');
+var href = "/programs";
+for(var i in split)
+{
+    href += "/"+split[i];
+    $title.append("<span>/</span>")
+    $title.append("<a href='"+href+"'>"+split[i]+"</a>");
+}    
 </script>
 </html>

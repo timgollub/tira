@@ -36,6 +36,12 @@ public class RemoteProgram extends AProgram{
 		return null;
     }
     
+    @Override
+    public String getInfo() {
+        // TODO Auto-generated method stub
+        return "";
+    }
+
     private void initBaseConfig(JSONObject record) throws JSONException
     {
         @SuppressWarnings("unchecked")
