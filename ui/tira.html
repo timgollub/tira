@@ -11,7 +11,7 @@
 <body>
 <div id="container">
 	<ul id="header">
-        <li><img src="/ui/icons/tira-logo-text.png"></li>
+        <li><a href="/programs/"><img src="/ui/icons/tira-logo-text.png"></a></li>
         <li id="title"></li>
     </ul>
     
@@ -34,6 +34,8 @@ $SCRIPT
 </script>
 <script>
 var $title = $('#title');
+if(pname=="Run Directory") {$title.append("<span>Data Directory</span>");}
+else{
 var split = pname.split('/');
 var href = "/programs";
 for(var i in split)
@@ -42,5 +44,6 @@ for(var i in split)
     $title.append("<span>/</span>")
     $title.append("<a href='"+href+"'>"+split[i]+"</a>");
 }    
+}
 </script>
 </html>

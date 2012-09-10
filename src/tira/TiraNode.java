@@ -1,7 +1,9 @@
 package tira;
 //import java.awt.Desktop;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
@@ -92,10 +94,10 @@ public class TiraNode {
                 StringBuilder html = new StringBuilder("<ul>");
                 for(String pname : programs)
                 {
-                    if(pname.isEmpty())
-                    {html.append("<li><a href='/programs/"+pname+"'>/</a></li>");}
+                    if(pname.isEmpty()){continue;}
+                    //{html.append("<li><a href='/programs/"+pname+"'>/</a></li>");}
                     else
-                    {html.append("<li><a href='/programs/"+pname+"'>"+pname+"</a></li>");}
+                    {html.append("<li><a href='/programs/"+pname+"'>/"+pname+"</a></li>");}
                 }
                 html.append("</ul>");
                 response.put(Util.INFO, html.toString());
@@ -281,6 +283,13 @@ public class TiraNode {
         server.start();
         System.out.println("TiraServer started on " + systemConfig.getString(Util.NODE));
         //open browser.
-        //if(Desktop.isDesktopSupported()){Desktop.getDesktop().browse(new URI(baseUrl));}  
+        //if(Desktop.isDesktopSupported()){Desktop.getDesktop().browse(new URI(baseUrl));}
+        System.out.println("Enter q to quit.\nTo delete existing program runs in the database, delete respective folders in tira-7/data/ and restart Tira.");
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        String s;
+        while ((s = in.readLine()) != null)
+        {if(s.equals("q")){System.exit(0);}}
+        // An empty line or Ctrl-Z terminates the program
+      
     }
 }

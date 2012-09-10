@@ -11,7 +11,7 @@ public class ProgramFactory {
     {
     	if(programRecord.has(Util.DATABASE))
     	{
-    		System.out.println("Remote Program:");
+    		//System.out.println("Remote Program:");
     		return new RemoteProgram(programRecord);
     	}
         return new LocalProgram(programRecord);

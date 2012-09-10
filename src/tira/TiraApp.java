@@ -132,7 +132,7 @@ public class TiraApp {
             programRecord.getJSONObject(Util.SYSTEM).put(Util.PROGRAMROOT, programRoot.getAbsolutePath());
             if(programRecord.has(Util.MAIN)||programRecord.has(Util.DATABASE))
             {
-                String programName = programDir.getPath().replaceFirst(programRoot.getPath(), "").substring(1).replace("\\", "/");
+                String programName = programDir.getAbsolutePath().replace("\\", "/").replaceFirst(programRoot.getAbsolutePath().replace("\\", "/"), "").substring(1);
                 programRecord.getJSONObject("SYSTEM").put(Util.PNAME, programName);
                 AProgram program = ProgramFactory.createProgram(programRecord);                    
                 programs.put(programName, program);

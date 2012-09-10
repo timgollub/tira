@@ -1,6 +1,6 @@
 {
-    "MAIN": "java -jar $PROGRAM$/websearch.jar '$Query' $NumResults $Engine > result.json && echo {\\\"result\\\":\\\"\\$Run Directory/result.json\\\"} 1>&2",
+    "MAIN": "java -jar $PROGRAM$/websearch.jar '$Query' $Results $Engine",
     "Query": "^\\w+$",
-    "NumResults":["1", "10", "100"],
-    "Engine" : ["BING","CHATNOIR","WIKIPEDIA"]
+    "Results":["1", "10", "100"],
+    "Engine" : ["ETOOLS","CHATNOIR","WIKIPEDIA","GOOGLE"]
 }

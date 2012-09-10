@@ -2,7 +2,7 @@
 	"SYSTEM":{
 	    "NODE"     : "http://localhost:2306/", 
 		"WORKER"   : 4,   
-		"PROGRAMROOT" : ["programs","../tira-7-programs/"],
+		"PROGRAMROOT" : ["programs","../tira7-programs/"],
 		"PROGRAM"     : "$PROGRAMROOT/$PNAME",
 		"DATAROOT"    : "data",
 		"DATA"        : "$DATAROOT/$PNAME",  

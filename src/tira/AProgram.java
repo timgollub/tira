@@ -43,9 +43,9 @@ public abstract class AProgram {
         File scriptFile = writeCommand(cmd, runDir);
         //start script.
         JSONObject files = new JSONObject();
-        files.put("Run Directory", (new File(runDir)).getAbsolutePath());
+        files.put("Data Directory", (new File(runDir)).getAbsolutePath());
         if(system.has(Util.NODE))
-        {   files.put("Run Directory", files.getString("Run Directory")
+        {   files.put("Data Directory", files.getString("Data Directory")
                 .replace(system.getString(Util.DATAROOT),system.getString(Util.NODE)+"data")
                 .replace("\\","/"));
         }
