@@ -49,6 +49,7 @@ public abstract class AProgram {
                 .replace(system.getString(Util.DATAROOT),system.getString(Util.NODE)+"data")
                 .replace("\\","/"));
         }
+        
         updateRun(runId, files); files = new JSONObject();
         int exitCode = call(scriptFile,runId);
         if(exitCode!=0) {updateRun(runId, files.put(Util.STATE, Util.ERROR));}
@@ -96,6 +97,8 @@ public abstract class AProgram {
             line.trim();
             if(line.startsWith("{") && line.endsWith("}"))//assume JSONObject-string.
             {
+                //Hotfix for websearch.jar. repair soon!
+            	line = line.replace("$Run Directory", "$Data Directory");
                 try {updateRun(runId,new JSONObject(line));
                     
                 }catch (JSONException e) {}
