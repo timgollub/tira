@@ -6,7 +6,7 @@ body {
 }
 
 #container {
-    width:960px;
+   // width:960px;
     margin:0px auto;
     border-top: 8px solid #0066cc;
 }
@@ -32,6 +32,7 @@ body {
 {
     margin:0;
     padding:0;
+    border:none;
 }
 
 #title {
@@ -44,14 +45,18 @@ body {
 CONTENT
 *******/
 
+#info {
+ margin:5px;
+}
+
  #tira {
  font-size: 10pt;
  }
  
- #tira > * {
-  padding-bottom: 1em;
-  margin-bottom: 2em;
-  border-bottom: dotted 1px #666666;
+ #form, #results {
+  padding-top: 1em;
+  margin-top: 2em;
+  border-top: dotted 1px #666666;
  }
 
 

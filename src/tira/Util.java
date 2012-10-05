@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -124,6 +125,7 @@ public class Util {
         while(bin.read(cbuf) != -1) {
              sb.append(cbuf);
         }
+        bin.close();
         return sb.toString();
     }
     
@@ -135,7 +137,7 @@ public class Util {
         return substitute(cmd,config);
     }
     
-    //if more than one key matches the same place-holder take longer key.
+    //if more than one key matches the same place-holder the longer key is returned.
     public static String findMatch(String cmd, JSONObject config) {
         if(!cmd.contains("$")){return null;}
         String matchingKey = null; int maxLength=0;
@@ -151,6 +153,7 @@ public class Util {
         return matchingKey;
     }
 
+    //TODO: ensure that only longest matching keys are returned.
     public static List<String> findAllMatches(String cmd, JSONObject config) {
         List<String> matches = new LinkedList<String>();
         if(!cmd.contains("$")){return matches;}
@@ -215,7 +218,7 @@ public class Util {
         JSONObject config = new JSONObject();
         for(String key: keys)
         {
-            JSONArray array = new JSONArray(queryParams.get(key));
+            JSONArray array = new JSONArray(new HashSet<String>(queryParams.get(key)));
             if(array.length()>1){config.put(key, array);}
             //if(!array.getString(0).equals("")){config.put(key, array.getString(0));}
             else{config.put(key, array.getString(0));}

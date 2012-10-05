@@ -205,10 +205,11 @@ public class LocalProgram extends AProgram{
         //substitute $DATA with values.
         File runDir = new File(system.getString(Util.DATA),run.getString(Util.ID));
         runDir.mkdirs();        
-        FileWriter writer = new FileWriter(new File(runDir,run.getString(Util.ID)+".run"),true);
+        //FileWriter writer = new FileWriter(new File(runDir,run.getString(Util.ID)+".run"),true);
+        FileWriter writer = new FileWriter(new File(runDir,".run"),true);
         writer.write(run.toString(1));
         writer.write(",");
-        writer.flush();       
+        writer.close();       
     }
 
     @Override

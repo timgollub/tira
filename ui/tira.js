@@ -6,12 +6,17 @@ function Tira()
     var _this = this;
     var $form = $("<form id='form' action=''><ul class='config' id='config'/><input id='query' type='button' value='Search'/><input id='execute' type='button' value='Execute'></form>");
     $form.submit(function(){$(':file').attr("disabled",true)});
-    $('#tira').append("<div id='info'/>").append($form).append("<div id='results'/>");
+    $('#tira').append("<div id='info'/>").append($form).append("<div id='results'/><div id='extras'/>");
     $('#query').click(function(){$form.attr("method","get");$form.submit();});
     var $execute = $('#execute').click(function(){$form.attr("method","post");$form.submit();});
     var $info = $('#info');
     var $config = $('#config');
-    var $results = $('#results');    
+    var $results = $('#results');
+    var $extras = $('#extras');
+    
+    var input_types = {};    
+    var isAutoUpdate = 0;
+    var updateTimer;
 
     this.checkExecutable = function()
     {
@@ -50,8 +55,9 @@ function Tira()
         //_this.setTitle();
         _this.renderRecordEntry("MAIN", $config);
         _this.initAddRemoveButtons();
-        _this.checkExecutable();
+        _this.checkExecutable();        
         _this.renderResultTable($results);
+        _this.renderAutoUpdateToggleButtons($extras);
     }
     
     this.loadInfo = function($htmlElement)
@@ -120,6 +126,11 @@ function Tira()
         	_this.checkRegex( $(this),recordEntry );
     	});
         $label.append($input);
+        //if( input_types[paramLabel] != undefined ) {_this.appendAddButton($li,true);}
+        //else {input_types[paramLabel] = true; _this.appendAddButton($li);}
+        if($htmlElement.find('label').text().indexOf(paramLabel)>-1){_this.appendAddButton($li,true);}
+        else {_this.appendAddButton($li);}
+        
         $htmlElement.append($li);
     }
     
@@ -141,22 +152,33 @@ function Tira()
              {
                  if(record[opt.substring(1)]){
                      $option.text(record[opt.substring(1)].label);
+                    // $option.val(record[opt.substring(1)].value);
                  }
              }
              $input.append($option);
         }
         $label.append($input);
+        //if( input_types[paramLabel] != undefined ) {_this.appendAddButton($li,true);}
+        //else {input_types[paramLabel] = true; _this.appendAddButton($li);}
+        if($htmlElement.find('label').text().indexOf(paramLabel)>-1){_this.appendAddButton($li,true);}
+        else {_this.appendAddButton($li);}
+
         $htmlElement.append($li);
         $input.change( function(event) {
-            var $li = $(this).parents('li');
+            var $li = $(this).parent().parent(); //->label->li
             $li.find('ul').remove();
             var value = $(this).val();
-            if(value[0] === "$")
+
+            //if(value[0] === "$")
+            if(value.indexOf("$")!=-1)
             {
                 var $ul = $(document.createElement('ul')).appendTo($li);
+                //_this.renderChildren(value, $ul);                
                 _this.renderRecordEntry(value.substring(1),$ul);
-                _this.appendAddButton( $ul.find( 'li:first-child' ) );
+                //_this.appendAddButton( $ul.find( 'li:first-child' ) );
+                //_this.appendAddButton( $ul.find( 'li' ) );
             }
+            
             _this.checkExecutable();
         });
         $input.change();       
@@ -193,17 +215,28 @@ function Tira()
     
     this.renderChildren = function(value, htmlElement)
     {
+        //determine parameter order.
+        matches=[];
         for(var key in record)
         {
-            //var key=record.MAIN.params[i];
-            if(value.indexOf("$"+key)!=-1){_this.renderRecordEntry(key,htmlElement);}
+            pos = value.indexOf("$"+key)
+            if(pos>-1 && !matches[pos]){matches[pos]=key;}
+            else if (pos>-1 && matches[pos])
+            {
+                alert(matches[pos]+" : "+key);
+                if(matches[pos].length<key.length){matches[pos]=key;}
+            }
+        }
+        for(var pos in matches)
+        {
+            _this.renderRecordEntry(matches[pos],htmlElement);
         }  
     }
     
     this.initAddRemoveButtons = function()
     {
     	// code for having add/remove buttons
-        $config = $('#config');
+  /*      $config = $('#config');
 		$config_li = $config.find('li');
 		
 		var input_types = {};
@@ -227,7 +260,7 @@ function Tira()
 			}
 			
 		} );
-		
+*/
 		// using on to replace the live click handler as live is deprecated
 		$( document ).on( "click", "#config input.add-button", function(){
 			
@@ -298,54 +331,148 @@ function Tira()
     }
     
     this.renderResultTable = function(htmlElement)
-    { 
-        var $table = $(document.createElement('table')).attr('class','tablesorter').appendTo(htmlElement);        
-        var $head = $(document.createElement('thead')).appendTo($table);
-        var $header = $(document.createElement('tr')).appendTo($head);
-        var $body = $(document.createElement('tbody')).appendTo($table);
-        
-        
-        var tableHeaders = [];
-        if(record.OUTPUT && results)
-        {
-            tableHeaders=record.OUTPUT;
-            for(var i in tableHeaders) {$header.append($("<th>"+tableHeaders[i]+"</th>"));}
-        }
-        else
-        {
-            for(var i in results)
-            {
-            	result = results[i];
-            	for(var key in result)
-            	{
-            		if(key == key.toUpperCase()){continue;}
-            		if(tableHeaders.indexOf(key)<0){tableHeaders.push(key);$header.append($("<th>"+key+"</th>"));}  		
-            	}
-            }
-        }
-        
-        for(var i in results)
-        {
-            var result = results[i];
-            var $row = $(document.createElement('tr')).appendTo($body);
-            for(var j in tableHeaders)
-            {                
-                var key = tableHeaders[j];
-                if(result[key] && result[key].indexOf("http://") == 0)
-                {
-                    $row.append($("<td><a href='"+result[key]+"'>"+key+"</a></td>"));
-                }
-                else if (result[key] && result[key] != undefined) 
-                {
-                    $row.append($("<td>"+result[key]+"</td>"));
-                }
-                else {$row.append($("<td></td>"));}
-            }
-        }
-        
-        $table.columnCollapse();
-        $table.tablesorter();
-        
-        
+    {
+    	// only process if results is not empty
+    	if( results != undefined )
+    	{
+    	
+	    	//alert("rendering result table now");
+	    	
+	        var $table = $(document.createElement('table')).attr('class','tablesorter').appendTo(htmlElement);        
+	        var $head = $(document.createElement('thead')).appendTo($table);
+	        var $header = $(document.createElement('tr')).appendTo($head);
+	        var $body = $(document.createElement('tbody')).appendTo($table);
+	        
+	        var tableHeaders = [];
+	        
+	        if(record.OUTPUT && results)
+	        {
+	            tableHeaders=record.OUTPUT;
+	            for(var i in tableHeaders) {$header.append($("<th>"+tableHeaders[i]+"</th>"));}
+	        }
+	        else
+	        {
+	            for(var i in results)
+	            {
+	            	result = results[i];
+	            	for(var key in result)
+	            	{
+	            		if(key == key.toUpperCase()){continue;}
+	            		if(tableHeaders.indexOf(key)<0){tableHeaders.push(key);$header.append($("<th>"+key+"</th>"));}  		
+	            	}
+	            }
+	        }
+	        
+	        for(var i in results)
+	        {
+	            var result = results[i];
+	            var $row = $(document.createElement('tr')).appendTo($body);
+	            for(var j in tableHeaders)
+	            {                
+	                var key = tableHeaders[j];
+	                if(result[key] && result[key].indexOf("http://") == 0)
+	                {
+	                    $row.append($("<td><a href='"+result[key]+"'>"+key+"</a></td>"));
+	                }
+	                else if(result[key] && result[key].indexOf("$") == 0 && record[result[key].substring(1)])
+	                {
+	                   $row.append($("<td>"+record[result[key].substring(1)].label+"</td>"));
+	                }
+	                else if (result[key] && result[key] != undefined) 
+	                {
+	                    $row.append($("<td>"+result[key]+"</td>"));
+	                }
+	                else {$row.append($("<td></td>"));}
+	            }
+	        }
+	        
+	        $table.columnCollapse();
+	        $table.tablesorter();
+	        
+    	}
+    }
+    
+    
+    // This function will render the toggle buttons to choose whether to auto update results or not
+    
+    this.renderAutoUpdateToggleButtons = function( $htmlElement )
+    {
+    	if( results )
+		{
+	    	var $toggleParent   = $( '<div id="toggleParent"><span>Auto Update Result Table</span></div>' );
+	    	var $radioButtonOn  = $( '<input type="radio" id="updateOn" name="autoUpdate" value="1" /><label for="updateOn">On</label>' );
+	    	var $radioButtonOff = $( '<input type="radio" id="updateOff" name="autoUpdate" value="0" checked="checked" /><label for="updateOff">Off</label>' );
+	    	
+	    	$toggleParent.append( $radioButtonOn );
+	    	$toggleParent.append( $radioButtonOff );
+	    	
+	    	$toggleParent.appendTo( $htmlElement );
+	    	
+	    	$( 'input[name="autoUpdate"]' ).change( function(){
+	    		
+	    		isAutoUpdate = $(this).val();
+	    		
+	    		//console.log( 'change called' );
+	    		
+	    		_this.setupAutoTimer();
+	    	
+	    	} )
+	    	
+	    	
+		}
+    }
+    
+    
+    // This function will setup the update function for the given number of seconds
+    
+    this.setupAutoTimer = function()
+    {
+    	//console.log( "calling setupAutoTimer" );
+    	
+    	var interval = 5000;
+    	if( isAutoUpdate == 1 ) {
+    		
+    		//console.log( "rendering results - "+interval );
+    		
+    		_this.fetchResultsAndSetTimer(interval);
+    	}
+    	else if( updateTimer ){
+    		clearTimeout( updateTimer );
+    	}
+    }
+    
+    
+    // This function will fetch fresh results from the Server for the current page
+    
+    this.fetchResultsAndSetTimer = function( interval )
+    {
+    	var currentUrl = window.location.href;
+    	
+    	if( currentUrl && currentUrl.indexOf('?') != -1 )
+		{
+    		var splittedUrl = currentUrl.split('?');
+    		var ajaxUrl = splittedUrl[0] + '.json?' + splittedUrl[1];
+    		
+    		$.getJSON( 
+    			ajaxUrl, 
+    			function(data){
+    				
+    				if( data ) {
+    					
+    					results = data;	// replacing old data with new one
+    					
+    					$results.find('table').remove();
+    					//$results.fadeOut('slow');
+    					
+    					_this.renderResultTable($results);
+    					
+    					//$results.fadeIn('slow');
+    				}
+    				
+    				setTimeout( _this.setupAutoTimer, interval );
+    			}
+			)
+    		
+		}
     }
 }

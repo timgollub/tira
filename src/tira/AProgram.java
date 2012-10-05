@@ -94,7 +94,7 @@ public abstract class AProgram {
         while((line=br.readLine())!=null)
         {
             System.err.println(line);
-            line.trim();
+            line = line.trim();
             if(line.startsWith("{") && line.endsWith("}"))//assume JSONObject-string.
             {
                 //Hotfix for websearch.jar. repair soon!
