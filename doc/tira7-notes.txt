@@ -1,10 +1,10 @@
 MOP.   TIRA-7 NOTES.
-DATE.  August 09th, 2012.
+DATE.  October 05th, 2012.
 
 ORGANIZATION.
 
 [developers]
- - tim.gollub@ubi-weimar.de
+ - tim.gollub@uni-weimar.de
  - arnd.oberlaender@uni-weimar.de
  - johannes.kiesel@uni-weimar.de
  - umair.jabbar@uni-weimar.de
@@ -13,34 +13,96 @@ ORGANIZATION.
  - christopher.luebbemeier@uni-weimar.de
  - steven.burrows@uni-weimar.de
  - tom.paschke@uni-weimar.de
+ - clement.welsch@uni-weimar.de
+
+TASKS.
+
+[virtual os]
+ - start/stop virtual machine automatically.
+ 
+[platform - client]
+ - stepwise execution process.
+ - responsive layout.
+   
+[platform - server]
+ - networking. get all apps for a task.
+ - user administration.
+   
+[platform - worker]
+ - error logging and presentation.
+ - ommit use of $-sign for parameters.
+ 
+[platform - database]
+ - construct run-id from input parameters and vice versa.
+ 
+[tasks & apps]
+ - task import & application deployment.
+ - parse parameter values from directory.
+
 
 
 STORIES.
 
-[program deployment]
-  - how to deploy a program to tira.
+[getting started]
+ - cloud scenario.
+   - user signs up for an account.
+   - user selects the prefered vitual machine (vm).
+   - user gets an ssh-connection (remote desktop?) to the vm.
+   - user can access the tira git repo to get the latest TIRA version.
+   - user gets an http connection to the TIRA instance on the vm.
+ - local scenario.
+   - user checks-out the tira git repo.
+   - specifies username and password on first visit.
+   
+[installing new tasks]
+  - install existing task.
+    - login to TIRA. Navigate browser to an undefined url.
+    - enter url of the existing task into the displayed form.
+    - TIRA fetches all required task resources and links them to the current url.
+    - TIRA searches for apps solving this task and integrates them into the platform as remote apps.
+  - own task.
+    - open the tira/tasks/ folder.
+    - create new task record.
+    - provide data and evaluation programs.
+    - specifiy public/private task.
+
+[create new task record]
+TODO.
+    
+[installing new apps]
+  - open the tira/apps/ folder.
+  - create new app record.
+  - provide app program.
+  - specify public/private app.
+  
+[create new app record]
     - starting point: executable command line program.
     - step 1: 
 	  - write minimal record = {"MAIN":"<cmd>"}
-	  - save it under "record.json" or <name>.record in the tira programs folder, subfolder <name>.
-	  - start tira and navigate to <base-url>/programs/<name>
-	  - run program. The output files of the run are accessible from the result table.
+	  - save it under <app>.tira in the tira/apps/ folder (or any subfolder).
+	  - start tira and navigate to <base-url>/apps/<name>
+	  - click execute. The output files of the run are accessible from the result table.
 	- step 2.
 	  - extend record to contain the parameters of the program.
-	    - add $<param> expressions to the command.
+	    - add <param> expressions to the command.
 	    - add <param> fields to the program record = {<param1>:"[0-9]+", <param2>: ["opt1","opt2"]}
-	  - request tira update for the program.
-	  - run program with different parameters.
+	  - reload tira web page of the app.
+	  - run app with different parameters.
 	  - test retrieval functionality on the web page.
 	step 3.
 	  - extend record with additional ui information.
-	    - add program label to record.
+
+[program development and TIRA]
+  - goal: programmers use TIRA already while implementing the app. e.g. for testing and sharing.
+  - all resources are always up to date. i.e. any changes are recognized without restarting TIRA.
+  - TIRA runs the original code, not jars or other executables.
+ 
 
 [program execution]
   - how programs are executed in tira.
-    - starting point: http get request to program resource, e.g. localhost:2306/programs/echo .
+    - starting point: http get request to program resource, e.g. localhost:2306/apps/echo .
     - step 1: user fills in at least one value for all required parameters, clicks execute.
-    - step 2: http post request to tira server, e.g. at localhost:2306/programs/<name>/?param1=0&param2=opt1.
+    - step 2: http post request to tira server, e.g. at localhost:2306/apps/<name>/?param1=0&param2=opt1.
     - step 3: TiraNode receives query string and creates a JSONObject from it, the runConfig.
     - step 4: the runConfig is passed via TiraApp to the respective program, where the runConfig is decomposed into individual runs.
     - step 5: every new run is added to the program's database as pending run (with Status == TODO) and with a unique runID.
@@ -56,16 +118,13 @@ STORIES.
     - step 2: http get request to tira server, e.g. at localhost:2306/programs/<name>/?param1=0&param2=opt1.
     - step 3: TiraNode receives query string and creates a JSONObject from it, the runConfig.
     - step 4: the runConfig is passed via TiraApp to the respective program, where all runs matching the query are retrieved as JSONArray 'results'.
-    - step 5: 
+    - step 5: the result json-array is written as an array called RESULTS into the javascript of the returned html.
     
 [html page construction]
   - info box. (<program>.info)
-  
   - parameter box.
-  
   - result box.
   
-  - pipes box.
 
 [parameter substitution]
 
@@ -75,6 +134,7 @@ STORIES.
 
 [system vs. program parameters]
   - to execute a program run, some system specific information like program and data directory paths are needed. this information is passed to the program with the program record. this information should be private.
+
 
 COMPONENTS.
 
@@ -100,5 +160,3 @@ COMPONENTS.
   - PAN corpus construction program.
   - Corpora project (TIRA services for preprocessing datasets with hadoop).
 
-
-SPRINTS.
