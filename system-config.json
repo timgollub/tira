@@ -1,11 +1,11 @@
 {
-	"SYSTEM":{
-	    "NODE"     : "http://pcstein8.medien.uni-weimar.de:2306/", 
-		"WORKER"   : 4,   
-		"PROGRAMROOT" : ["programs","../tira7-programs/"],
-		"PROGRAM"     : "$PROGRAMROOT/$PNAME",
-		"DATAROOT"    : "data",
-		"DATA"        : "$DATAROOT/$PNAME",  
-		"UI"     : "ui"
-	}
+  "SYSTEM":{
+    "NODE"        : "http://localhost:2306/", 
+    "WORKER"      : 4,   
+    "PROGRAMROOT" : ["programs"],
+    "PROGRAM"     : "$PROGRAMROOT/$PNAME",
+    "DATAROOT"    : "data",
+    "DATA"        : "$DATAROOT/$PNAME",  
+    "UI"          : "ui"
+  }
 }

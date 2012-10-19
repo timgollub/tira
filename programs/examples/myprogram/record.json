@@ -1,5 +1,0 @@
-{
-    "MAIN": "$PROGRAM/myprogram.sh $Parameter 1 $Parameter 2",   
-    "Parameter 1": "^[a-zA-z0-9.]+$",
-    "Parameter 2":["Method1", "Method2"]
-}

@@ -1,0 +1,129 @@
+Build TIRA
+==========
+Follow these instructions to build TIRA using [Ant](http://ant.apache.org) or
+[Eclipse](http://www.eclipse.org/downloads/moreinfo/java.php). In the
+instructions, the term "main directory" refers to the directory which contains
+this file.
+
+Build with Ant
+--------------
+* Make sure you have [Ant](http://ant.apache.org) installed
+* Go into the main directory
+* In the command line prompt, type "ant"
+
+Build with Eclipse
+------------------
+* In Eclipse, open dialog "File" > "New" > "Java Project"
+* Under "Contents", choose "Create project from existing source"
+* Browse for the TIRA main directory
+* Click "Finish"
+
+Configuring TIRA
+================
+TIRA is configured using the [JSON](http://www.json.org) file
+"system-config.json" in the main directory.
+
+* Adjust value for "NODE" to reflect the host URL
+* Adjust number of threads by changing value for "WORKER"
+
+Using TIRA
+==========
+
+A First Start
+-------------
+On a Unix system, run "./startTira.sh" from the main directory.
+On a Windows system, run "startTira.bat" from the main directory.
+You are now able to access TIRA via your browser using the URL you adjusted in
+"Configuring TIRA". You can try out one of the examples (like
+"/examples/websearch") in order to test if it works fine.
+
+An Example: Websearch
+---------------------
+Go to the page of the "/examples/websearch" program. Enter "hello world" into
+the input field which is labeled "Query". From the drop down list "Results",
+choose "10" and from the list "Engine" select "CHATNOIR". Now use the "+" button
+next to "CHATNOIR". It will provide you with a further drop down list from
+which you have to choose a second search engine.
+
+You have now configured the program. It is already prepared to be run.
+Click "Search". It should display no results yet. Click "Execute" to run the
+program. It will show you the run configuration below. Now, click "Search" again
+or select the "Auto Update Result Table" option. You should now also see a
+"Result" column in the table below the configuration settings. You can click on
+the link "Result" in order to inspect the results retrieved by one of the search
+engines.
+
+Later, you might wish to find your old results again. You can do so with the
+"Search" button. Only the results matching the current configuration are
+displayed. Click the "-" button next to the second engine and then click on
+"Search" again. Now, only the result of running ChatNoir is displayed.
+Alternatively, you can search for results from any engine by changing the
+remaining engine from "CHATNOIR" to "-". If you click again on "Search", all
+results will be displayed once more.
+
+Adding Programs
+---------------
+You can have a look at how the websearch program is used in order to understand
+how TIRA recognizes and runs programs. It will search recursively in all
+directories contained in the program root directories (set by "PROGRAMROOT" in
+the "system-config.java" file). By default this is set to "programs". In
+"programs/examples/websearch" it finds a file "record.json". Such files are
+used within TIRA to describe programs. The directory also contains the
+"websearch.jar" file which contains the Java program.
+
+If you open the "record.json" file, you will see that it is indeed a JSON file.
+It contains four keys: "MAIN", "Query", "Results" and "Engine". The last three
+ones define the parameters which are displayed on the web page. If the
+associated value is a string (like for "Query"), an input field will be
+displayed. Furthermore, the string describes a regular expression of what a
+valid value is. If the value is a list (like for "Results" and "Engine"), the
+entries of the list will be items in the corresponding drop down menu.
+The key "MAIN", however, declares not a option but describes how the program is
+executed. It contains a string with variables (startin with a "$" symbol).
+The variables "$Query", "$Results" and "$Engine" will on program start be
+replaced by the values selected by the user through the web interface. The
+"$PROGRAM$" variable will then expand to the directory in which the
+"record.json" lies.
+
+Also, you might want to provide the user with some information about your
+program. To achieve this goal, you can create a "info.html" file in the
+directory which contains the "record.json". This file should only contain plain
+text which describes the program and needs no html tag or similar. It's content
+will then be inserted above the program configuration in the web interface.
+
+Finally, please note that currently TIRA has to be restarted in order to detect
+new programs.
+
+Communication with TIRA
+-----------------------
+Programs are always run within an own directory. After running, this directory
+can be accessed by the "Data Directory" link in the row of the run in the
+experiments table. However, it is also possible to provide further results to
+the user. In TIRA7, the standard error output stream is observed by TIRA.
+Programs can print JSON key-value pairs to this stream which will then show up
+in the web interface. The format for this is a single line which starts with
+"{" and ends with "}". Between the brackets, a key-value pair of the form
+"<key>":"<value>" should be used, where <key> and <value> have to be replaced
+appropriately. For example, the "websearch" example prints the line
+'{"Result":"$Run Directory/results.json"}' to standard error. This results in
+a link within the web interface to the file "results.json" in the run directory.
+Naturally, also results of experiments are possible.
+
+Clearing Experiments
+--------------------
+For each program, a data directory will be created according to the "DATA"
+setting in the TIRA configuration file. By default, it will create a directory
+for each program within the "data" directory. Within this directory, a new
+directory will be created for each run of the program.
+Thus, you can delete a single run, all runs of a program or simply all runs by
+deleting the corresponding directories. Note, however, that TIRA has to be
+restarted to detect these changes.
+
+Stopping TIRA
+-------------
+You can stop the TIRA server by typing "q" in the terminal in which it was
+started and then hitting enter.
+
+Questions and Feedback
+======================
+Email: tim [dot] gollub [aet] uni-weimar.de
