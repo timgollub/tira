@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="tira">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="tira.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="lib/jersey-bundle-1.12.jar"/>
+        <pathelement location="lib/thirdparty-json-11.jar"/>
+        <pathelement location="lib/jsr311-api-1.1.1.jar"/>
+        <pathelement location="lib/commons-io-2.0.1.jar"/>
+    </path>
+    <target name="build">
+        <mkdir dir="bin"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="tira.classpath"/>
+        </javac>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+        <delete dir="data"/>
+    </target>
+</project>

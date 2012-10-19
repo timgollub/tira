@@ -1,4 +1,0 @@
-{
-    "MAIN": "wc $File",
-    "File": {"ui":"input-file", "label":"Text File"}
-}
